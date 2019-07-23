@@ -72,7 +72,7 @@ public struct ABCIProcessor {
                         case let .setOption(r):
                             response.setOption = Types_ResponseSetOption(application.setOption(r.key, r.value))
                         case let .query(r):
-                            response.query = Types_ResponseQuery(application.query(Query(data: r.data, path: r.path, height: r.height, prove: r.prove)))
+                            response.query = Types_ResponseQuery(application.query(Query(r.data, r.path, r.height, r.prove)))
                         case let .initChain(r):
                             response.initChain = Types_ResponseInitChain(application.initChain(r.time.date, r.chainID, ConsensusParams(protobuf: r.consensusParams), r.validators.map{ ValidatorUpdate(protobuf: $0) } , r.appStateBytes))
                         }

@@ -19,26 +19,23 @@ import Foundation
 import DataConvertible
 
 
+/// Simple counter app.  It only excepts values sent to it in order.  The
+///  state maintains the current count. For example if starting at state 0, sending:
+///  -> 0x01 = ok
+///  -> 0x03 = fail (expects 2)
+///  To run it:
+///  - make a clean new directory for tendermint
+///  - start this server: .build/debug/ABCICounter
+///  - start tendermint: tendermint --home "YOUR DIR HERE" node
+///  - The send transactions to the app:
+///  curl http://localhost:26657/broadcast_tx_commit?tx=0x01
+///  curl http://localhost:26657/broadcast_tx_commit?tx=0x02
+///  ...
+///  to see the latest count:
+///  curl http://localhost:26657/abci_query
+///  The way the app state is structured, you can also see the current state value
+///  in the tendermint console output.
 class CounterApp: ABCIApplication {
-
-/*
-    Simple counter app.  It only excepts values sent to it in order.  The
-    state maintains the current count. For example if starting at state 0, sending:
-    -> 0x01 = ok
-    -> 0x03 = fail (expects 2)
-    To run it:
-    - make a clean new directory for tendermint
-    - start this server: .build/debug/ABCICounter
-    - start tendermint: tendermint --home "YOUR DIR HERE" node
-    - The send transactions to the app:
-    curl http://localhost:26657/broadcast_tx_commit?tx=0x01
-    curl http://localhost:26657/broadcast_tx_commit?tx=0x02
-    ...
-    to see the latest count:
-    curl http://localhost:26657/abci_query
-    The way the app state is structured, you can also see the current state value
-    in the tendermint console output.
-*/
 
     var txCount: UInt64 = 0
     var lastBlockheight: UInt64 = 0
@@ -61,7 +58,7 @@ class CounterApp: ABCIApplication {
         let bp = BlockParams(maxBytes: 4096, maxGas: 1000)
         let ep = EvidenceParams(maxAge: 10000)
         let vp = ValidatorParams(pubKeyTypes: ["ed25519"])
-        let cu = ConsensusParams(block: bp, evidence: ep, validator: vp)
+        let cu = ConsensusParams(bp, ep, vp)
         return ResponseInitChain(cu, [])
     }
     
@@ -117,7 +114,7 @@ class CounterApp: ABCIApplication {
         let bp = BlockParams(maxBytes: 22020096, maxGas: -1)
         let ep = EvidenceParams(maxAge: 100000)
         let vp = ValidatorParams(pubKeyTypes: ["ed25519"])
-        let cu = ConsensusParams(block: bp, evidence: ep, validator: vp)
+        let cu = ConsensusParams(bp, ep, vp)
         let e: [Event] = []
         return ResponseEndBlock(updates: [], consensusUpdates: cu, events: e)
     }
