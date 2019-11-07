@@ -66,9 +66,10 @@ public protocol ABCIApplication {
     /// the Tx will be added to Tendermint's mempool for consideration in a block.
     /// A non-zero response code implies an error and will reject the tx
     ///
-    /// - Parameter tx:
+    /// - Parameter tx: Data: The request transaction bytes
+    /// - Parameter  chktxt: CheckTxType: What type of `CheckTx` request is this? At present, there are two possible values: `CheckTx_Unchecked` (the default, which says that a full check is required), and `CheckTx_Checked` (when the mempool is initiating a normal recheck of a transaction).
     /// - Returns:
-    func checkTx(_ tx: Data) -> ResponseCheckTx
+    func checkTx(_ tx: Data, _ chktxt: CheckTxType) -> ResponseCheckTx
     
     /// This is commonly used to query the state of the application.
     /// A non-zero 'code' in the response is used to indicate and error.

@@ -70,7 +70,11 @@ public struct ABCIProcessor {
                         case let .deliverTx(r):
                             response.deliverTx = Types_ResponseDeliverTx(application.deliverTx(r.tx))
                         case let .checkTx(r):
-                            response.checkTx = Types_ResponseCheckTx(application.checkTx(r.tx))
+                            let checkTxType = CheckTxType(rawValue: r.type.rawValue)
+                            if checkTxType == nil {
+                                logger.warning("Unrecognized checkType raw value \(r.type.rawValue) for request: \(request), forcing to .new")
+                            }
+                            response.checkTx = Types_ResponseCheckTx(application.checkTx(r.tx,  checkTxType ?? .new))
                         case .commit:
                             response.commit = Types_ResponseCommit(application.commit())
                         case let .setOption(r):
