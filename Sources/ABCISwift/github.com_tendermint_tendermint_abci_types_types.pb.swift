@@ -19,6 +19,46 @@ fileprivate struct _GeneratedWithProtocGenSwiftVersion: SwiftProtobuf.ProtobufAP
   typealias Version = _2
 }
 
+enum Types_CheckTxType: SwiftProtobuf.Enum {
+  typealias RawValue = Int
+  case new // = 0
+  case recheck // = 1
+  case UNRECOGNIZED(Int)
+
+  init() {
+    self = .new
+  }
+
+  init?(rawValue: Int) {
+    switch rawValue {
+    case 0: self = .new
+    case 1: self = .recheck
+    default: self = .UNRECOGNIZED(rawValue)
+    }
+  }
+
+  var rawValue: Int {
+    switch self {
+    case .new: return 0
+    case .recheck: return 1
+    case .UNRECOGNIZED(let i): return i
+    }
+  }
+
+}
+
+#if swift(>=4.2)
+
+extension Types_CheckTxType: CaseIterable {
+  // The compiler won't synthesize support with the UNRECOGNIZED case.
+  static var allCases: [Types_CheckTxType] = [
+    .new,
+    .recheck,
+  ]
+}
+
+#endif  // swift(>=4.2)
+
 struct Types_Request {
   // SwiftProtobuf.Message conformance is added in an extension below. See the
   // `Message` and `Message+*Additions` files in the SwiftProtobuf library for
@@ -319,6 +359,8 @@ struct Types_RequestCheckTx {
   // methods supported on all messages.
 
   var tx: Data = SwiftProtobuf.Internal.emptyData
+
+  var type: Types_CheckTxType = .new
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
 
@@ -1196,6 +1238,13 @@ struct Types_Evidence {
 
 fileprivate let _protobuf_package = "types"
 
+extension Types_CheckTxType: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "New"),
+    1: .same(proto: "Recheck"),
+  ]
+}
+
 extension Types_Request: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
   static let protoMessageName: String = _protobuf_package + ".Request"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
@@ -1729,12 +1778,14 @@ extension Types_RequestCheckTx: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
   static let protoMessageName: String = _protobuf_package + ".RequestCheckTx"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "tx"),
+    2: .same(proto: "type"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
       switch fieldNumber {
       case 1: try decoder.decodeSingularBytesField(value: &self.tx)
+      case 2: try decoder.decodeSingularEnumField(value: &self.type)
       default: break
       }
     }
@@ -1744,11 +1795,15 @@ extension Types_RequestCheckTx: SwiftProtobuf.Message, SwiftProtobuf._MessageImp
     if !self.tx.isEmpty {
       try visitor.visitSingularBytesField(value: self.tx, fieldNumber: 1)
     }
+    if self.type != .new {
+      try visitor.visitSingularEnumField(value: self.type, fieldNumber: 2)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
   static func ==(lhs: Types_RequestCheckTx, rhs: Types_RequestCheckTx) -> Bool {
     if lhs.tx != rhs.tx {return false}
+    if lhs.type != rhs.type {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }

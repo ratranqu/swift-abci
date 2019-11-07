@@ -12,7 +12,8 @@ It uses [SwiftNIO](https://github.com/apple/swift-nio) as its server core.
 
 Swift version: 5.0.x
 SwiftNIO version: 2.0.x
-ABCI version: 0.32.0 (tendermint 0.32.0-747f99fd)
+ABCI version: 0.16.1 
+Tendermint 0.32.7 - 7b67ee4
 
 
 ## Installation
@@ -68,7 +69,7 @@ public protocol ABCIApplication {
     func flush()
     func setOption(_ key: String, _ value: String) -> ResponseSetOption
     func deliverTx(_ tx: Data) -> ResponseDeliverTx
-    func checkTx(_ tx: Data) -> ResponseCheckTx
+    func checkTx(_ tx: Data, _ chktxt: CheckTxType) -> ResponseCheckTx
     func query(_ q: Query) -> ResponseQuery
     func beginBlock(_ hash: Data, _ header: Header, _ lastCommitInfo: LastCommitInfo, _ byzantineValidators: [Evidence]) -> ResponseBeginBlock
     func endBlock(_ height: Int64) -> ResponseEndBlock

@@ -74,7 +74,7 @@ class CounterApp: ABCIApplication {
         return ResponseDeliverTx.ok()
     }
     
-    func checkTx(_ tx: Data) -> ResponseCheckTx {
+    func checkTx(_ tx: Data, _ chktxt: CheckTxType = .new) -> ResponseCheckTx {
         // Validate the Tx before entry into the mempool
         if serial && !validate(tx) { return ResponseCheckTx.error(3, log:"bad count") }
         
